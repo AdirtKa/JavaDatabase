@@ -6,6 +6,7 @@ module com.adirtka.database {
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
     requires com.almasb.fxgl.all;
+    requires java.sql;
 
     opens com.adirtka.database to javafx.fxml;
     exports com.adirtka.database;
