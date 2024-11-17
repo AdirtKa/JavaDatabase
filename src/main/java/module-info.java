@@ -10,4 +10,7 @@ module com.adirtka.database {
 
     opens com.adirtka.database to javafx.fxml;
     exports com.adirtka.database;
+
+    opens model to javafx.base;
+    exports model;
 }
