@@ -4,15 +4,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import model.Schedule;
 import model.Subject;
 import database.Database;
 
 import java.sql.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class SubjectController {
 
@@ -40,6 +44,30 @@ public class SubjectController {
     @FXML
     private TextField facultyField;
 
+    @FXML
+    private TableView<Schedule> scheduleTable;
+
+    @FXML
+    private TableColumn<Schedule, String> daySchedule; // Колонки для расписания
+
+    @FXML
+    private TableColumn<Schedule, String> timeSchedule;
+
+    @FXML
+    private TableColumn<Schedule, String> classroomSchedule;
+
+    @FXML
+    TableColumn<Schedule, Integer> idSchedule;
+
+    @FXML
+    private TextField dayField;
+    @FXML
+    private TextField timeField;
+    @FXML
+    private TextField classroomField;
+
+
+    private ObservableList<Schedule> scheduleData = FXCollections.observableArrayList();
     private ObservableList<Subject> subjectData = FXCollections.observableArrayList();
 
     private Database db = new Database();
@@ -52,6 +80,11 @@ public class SubjectController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         teacherColumn.setCellValueFactory(new PropertyValueFactory<>("teacher"));
         facultyColumn.setCellValueFactory(new PropertyValueFactory<>("faculty"));
+
+        idSchedule.setCellValueFactory(new PropertyValueFactory<>("id"));
+        daySchedule.setCellValueFactory(new PropertyValueFactory<>("dayOfWeek"));
+        timeSchedule.setCellValueFactory(new PropertyValueFactory<>("time"));
+        classroomSchedule.setCellValueFactory(new PropertyValueFactory<>("classroom"));
 
         // Настройка редактирования колонок
         subjectTable.setEditable(true);
@@ -83,6 +116,7 @@ public class SubjectController {
 
         // Привязка данных к таблице
         subjectTable.setItems(subjectData);
+        scheduleTable.setItems(scheduleData);
 
     }
 
@@ -187,4 +221,172 @@ public class SubjectController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void showSchedule() {
+        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+        if (selectedSubject == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Subject Selected");
+            alert.setHeaderText("Please select a subject to view its schedule.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Получаем расписание для выбранного предмета
+        String query = "SELECT id, day_of_week, time, classroom FROM schedule WHERE subject_id = ?";
+        try (Connection connection = db.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, selectedSubject.getId());
+            ResultSet resultSet = statement.executeQuery();
+
+            scheduleData.clear(); // Очищаем старое расписание
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String dayOfWeek = resultSet.getString("day_of_week");
+                String time = resultSet.getString("time");
+                String classroom = resultSet.getString("classroom");
+
+                scheduleData.add(new Schedule(id, dayOfWeek, time, classroom));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void addSchedule() {
+        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+        if (selectedSubject == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Subject Selected");
+            alert.setHeaderText("Please select a subject to add a schedule.");
+            alert.showAndWait();
+            return;
+        }
+
+        String dayOfWeek = dayField.getText().trim();
+        String timeString = timeField.getText().trim();
+        String classroom = classroomField.getText().trim();
+
+        // Проверка на заполнение всех полей
+        if (dayOfWeek.isEmpty() || timeString.isEmpty() || classroom.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Invalid Input");
+            alert.setHeaderText("All fields must be filled!");
+            alert.showAndWait();
+            return;
+        }
+
+        // Преобразование строки во время
+        Time time;
+        try {
+            LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
+            time = Time.valueOf(localTime);
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Invalid Time Format");
+            alert.setHeaderText("Time must be in the format HH:mm (e.g., 14:30).");
+            alert.showAndWait();
+            return;
+        }
+
+        String insertQuery = "INSERT INTO schedule (subject_id, day_of_week, time, classroom) VALUES (?, ?, ?, ?)";
+        try (Connection connection = db.getConnection();
+             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+
+            statement.setInt(1, selectedSubject.getId());
+            statement.setString(2, dayOfWeek);
+            statement.setTime(3, time);  // Используем объект java.sql.Time
+            statement.setString(4, classroom);
+
+            statement.executeUpdate();
+
+            // Добавляем новое расписание в список и обновляем таблицу
+            showSchedule();
+            clearScheduleFields();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Schedule added successfully!");
+            alert.showAndWait();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error");
+            alert.setHeaderText("Failed to add schedule.");
+            alert.showAndWait();
+        }
+    }
+
+    // Метод для очистки полей ввода
+    private void clearScheduleFields() {
+        dayField.clear();
+        timeField.clear();
+        classroomField.clear();
+    }
+
+    @FXML
+    private void deleteSchedule() {
+        Schedule selectedSchedule = scheduleTable.getSelectionModel().getSelectedItem();
+
+        // Проверка на выбор строки
+        if (selectedSchedule == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Schedule Selected");
+            alert.setHeaderText("Please select a schedule to delete.");
+            alert.showAndWait();
+            return;
+        }
+
+        String deleteQuery = "DELETE FROM schedule WHERE subject_id = ? AND day_of_week = ? AND time = ? AND classroom = ?";
+        try (Connection connection = db.getConnection();
+             PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+
+            // Устанавливаем параметры запроса
+            Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+            if (selectedSubject == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("No Subject Selected");
+                alert.setHeaderText("Please select a subject first.");
+                alert.showAndWait();
+                return;
+            }
+
+            statement.setInt(1, selectedSubject.getId());
+            statement.setString(2, selectedSchedule.getDayOfWeek());
+            statement.setTime(3, Time.valueOf(selectedSchedule.getTime()));
+            statement.setString(4, selectedSchedule.getClassroom());
+
+            // Выполнение удаления
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Удаление из таблицы отображения
+                scheduleData.remove(selectedSchedule);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("Schedule deleted successfully!");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Failed to delete schedule.");
+                alert.showAndWait();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error");
+            alert.setHeaderText("Failed to delete schedule.");
+            alert.showAndWait();
+        }
+    }
+
 }

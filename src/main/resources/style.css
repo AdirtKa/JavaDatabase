@@ -1,0 +1,108 @@
+/* Общий стиль для фона */
+.root {
+    -fx-background-color: #2b2b2b; /* Тёмный фон */
+}
+
+/* Стили для кнопок */
+.button {
+    -fx-background-color: #4b0082; /* Фиолетовый фон кнопок */
+    -fx-text-fill: #ffffff; /* Белый текст */
+    -fx-font-size: 14px;
+    -fx-border-color: #6a0dad; /* Границы кнопок */
+    -fx-border-width: 2;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #6a0dad; /* Более светлый фиолетовый при наведении */
+}
+
+.button:pressed {
+    -fx-background-color: #370057; /* Тёмный фиолетовый при нажатии */
+}
+
+/* Стили для таблицы */
+.table-view {
+    -fx-background-color: #1e1e1e; /* Фон таблицы */
+    -fx-border-color: #4b0082; /* Границы таблицы */
+    -fx-border-width: 2;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent; /* Прозрачный фон строк */
+    -fx-text-fill: #ff0000; /* Светло-серый текст */
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #2d2d2d; /* Тёмно-серый фон для нечётных строк */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #6a0dad; /* Выделение строки */
+    -fx-text-fill: #ffffff; /* Белый текст для выделенной строки */
+}
+
+/* Стили для текста внутри ячеек таблицы */
+.table-cell {
+    -fx-text-fill: #dcdcdc; /* Светло-серый текст */
+    -fx-font-size: 14px; /* Размер шрифта */
+    -fx-alignment: CENTER; /* Центрирование текста */
+}
+
+.table-cell:selected {
+    -fx-text-fill: #ffffff; /* Белый текст для выделенных ячеек */
+    -fx-background-color: #6a0dad; /* Фиолетовый фон для выделенных ячеек */
+}
+
+
+/* Стили для заголовков таблицы */
+.table-view .column-header {
+    -fx-background-color: #4b0082; /* Фиолетовый фон заголовков */
+    -fx-text-fill: #ffffff; /* Белый текст */
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER; /* Центровка текста */
+    -fx-border-color: #6a0dad; /* Границы заголовков */
+}
+
+/* Стили для заголовка кнопок внутри таблицы */
+.table-view .column-header .label {
+    -fx-text-fill: #ffffff; /* Белый цвет текста */
+}
+
+/* Общие стили текста */
+.label {
+    -fx-text-fill: #dcdcdc; /* Светло-серый текст */
+}
+
+/* Общий стиль для текстовых полей */
+.text-field {
+    -fx-background-color: #2b2b2b; /* Тёмный фон для текстового поля */
+    -fx-text-fill: #dcdcdc; /* Светло-серый текст */
+    -fx-border-color: #4b0082; /* Фиолетовая рамка */
+    -fx-border-width: 2;
+    -fx-background-radius: 5; /* Скруглённые углы */
+    -fx-border-radius: 5;
+    -fx-padding: 5; /* Отступы внутри текстового поля */
+    -fx-font-size: 14px; /* Размер текста */
+}
+
+/* Текстовое поле при наведении */
+.text-field:hover {
+    -fx-border-color: #6a0dad; /* Более яркая рамка при наведении */
+}
+
+/* Текстовое поле при фокусе (активное) */
+.text-field:focused {
+    -fx-border-color: #ffffff; /* Белая рамка при фокусе */
+    -fx-background-color: #1e1e1e; /* Более тёмный фон */
+    -fx-text-fill: #ffffff; /* Белый текст при вводе */
+}
+
+/* Текстовое поле с ошибкой (например, можно добавить класс error через код) */
+.text-field.error {
+    -fx-border-color: #ff0000; /* Красная рамка для ошибки */
+    -fx-background-color: #2b2b2b; /* Фон остаётся тёмным */
+    -fx-text-fill: #ff0000; /* Красный текст */
+}
