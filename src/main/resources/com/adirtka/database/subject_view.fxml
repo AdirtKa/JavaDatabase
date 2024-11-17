@@ -3,11 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.adirtka.database.SubjectController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.adirtka.database.SubjectController">
    <children>
-       <TableView fx:id="subjectTable" prefWidth="600" prefHeight="400" layoutX="10" layoutY="10">
+       <TableView fx:id="subjectTable" layoutX="10" layoutY="10" prefHeight="400" prefWidth="600" editable="true">
            <columns>
                <TableColumn fx:id="idColumn" text="ID" />
                <TableColumn fx:id="nameColumn" text="Name" />
@@ -18,5 +16,12 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+           <TextField fx:id="nameField" promptText="Enter subject name" />
+           <TextField fx:id="teacherField" promptText="Enter teacher name" />
+           <TextField fx:id="facultyField" promptText="Enter faculty name" />
+           <Button text="Add Subject" onAction="#addSubject" />
+           <Button text="Delete Subject" onAction="#deleteSubject" />
+      </HBox>
    </children>
 </VBox>
