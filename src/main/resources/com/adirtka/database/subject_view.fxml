@@ -24,7 +24,7 @@
            <Button onAction="#deleteSubject" text="Delete Subject" />
       </HBox>
       <Button mnemonicParsing="false" onAction="#showSchedule" text="showSchedule" />
-      <TableView fx:id="scheduleTable" prefHeight="200.0" prefWidth="611.0">
+      <TableView fx:id="scheduleTable" prefHeight="200.0" prefWidth="611.0" editable="true">
         <columns>
           <TableColumn fx:id="idSchedule" prefWidth="75.0" text="id" visible="false" />
           <TableColumn fx:id="daySchedule" prefWidth="75.0" text="day_of_week" />

@@ -82,6 +82,7 @@ public class SubjectController {
         facultyColumn.setCellValueFactory(new PropertyValueFactory<>("faculty"));
 
         idSchedule.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idSchedule.setVisible(false);
         daySchedule.setCellValueFactory(new PropertyValueFactory<>("dayOfWeek"));
         timeSchedule.setCellValueFactory(new PropertyValueFactory<>("time"));
         classroomSchedule.setCellValueFactory(new PropertyValueFactory<>("classroom"));
@@ -110,6 +111,30 @@ public class SubjectController {
             subject.setFaculty(event.getNewValue());
             updateSubjectInDatabase(subject);
         });
+
+        scheduleTable.setEditable(true);
+        classroomSchedule.setCellFactory(TextFieldTableCell.forTableColumn());
+        timeSchedule.setCellFactory(TextFieldTableCell.forTableColumn());
+        daySchedule.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        classroomSchedule.setOnEditCommit(event -> {
+            Schedule schedule = event.getRowValue();
+            schedule.setClassroom(event.getNewValue());
+            updateScheduleInDatabase(schedule);
+        });
+
+        timeSchedule.setOnEditCommit(event -> {
+            Schedule schedule = event.getRowValue();
+            schedule.setTime(event.getNewValue());
+            updateScheduleInDatabase(schedule);
+        });
+
+        daySchedule.setOnEditCommit(event -> {
+            Schedule schedule = event.getRowValue();
+            schedule.setDayOfWeek(event.getNewValue());
+            updateScheduleInDatabase(schedule);
+        });
+
 
         // Добавление данных
         loadSubjectData();
@@ -160,6 +185,33 @@ public class SubjectController {
             statement.setInt(4, subject.getId());
 
             statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateScheduleInDatabase(Schedule schedule){
+        String updateQuery = "UPDATE schedule SET day_of_week = ?, classroom = ?, time = ? WHERE id = ?";
+        try (Connection connection = db.getConnection();
+        PreparedStatement statement = connection.prepareStatement(updateQuery)){
+
+            // Преобразование строки во время
+            Time time;
+            try {
+                LocalTime localTime = LocalTime.parse(schedule.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
+                time = Time.valueOf(localTime);
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Invalid Time Format");
+                alert.setHeaderText("Time must be in the format HH:mm (e.g., 14:30).");
+                alert.showAndWait();
+                return;
+            }
+
+            statement.setString(1, schedule.getDayOfWeek());
+            statement.setTime(2, time);
+            statement.setString(3, schedule.getClassroom());
+            statement.setInt(4, schedule.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -343,7 +395,8 @@ public class SubjectController {
             return;
         }
 
-        String deleteQuery = "DELETE FROM schedule WHERE subject_id = ? AND day_of_week = ? AND time = ? AND classroom = ?";
+        //String deleteQuery = "DELETE FROM schedule WHERE subject_id = ? AND day_of_week = ? AND time = ? AND classroom = ?";
+        String deleteQuery = "DELETE FROM schedule WHERE id = ?";
         try (Connection connection = db.getConnection();
              PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
 
@@ -357,10 +410,12 @@ public class SubjectController {
                 return;
             }
 
-            statement.setInt(1, selectedSubject.getId());
-            statement.setString(2, selectedSchedule.getDayOfWeek());
-            statement.setTime(3, Time.valueOf(selectedSchedule.getTime()));
-            statement.setString(4, selectedSchedule.getClassroom());
+            statement.setInt(1, selectedSchedule.getId());
+
+//            statement.setInt(1, selectedSubject.getId());
+//            statement.setString(2, selectedSchedule.getDayOfWeek());
+//            statement.setTime(3, Time.valueOf(selectedSchedule.getTime()));
+//            statement.setString(4, selectedSchedule.getClassroom());
 
             // Выполнение удаления
             int rowsAffected = statement.executeUpdate();
