@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import model.Schedule;
@@ -60,7 +57,8 @@ public class SubjectController {
     TableColumn<Schedule, Integer> idSchedule;
 
     @FXML
-    private TextField dayField;
+    private ComboBox<String> dayComboBox;
+
     @FXML
     private TextField timeField;
     @FXML
@@ -74,6 +72,16 @@ public class SubjectController {
 
     @FXML
     private void initialize() {
+        dayComboBox.getItems().addAll(
+                "Понедельник",
+                "Вторник",
+                "Среда",
+                "Четверг",
+                "Пятница",
+                "Суббота",
+                "Воскресенье"
+        );
+
         // Настройка колонок
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         idColumn.setVisible(false);
@@ -320,7 +328,7 @@ public class SubjectController {
             return;
         }
 
-        String dayOfWeek = dayField.getText().trim();
+        String dayOfWeek = dayComboBox.getSelectionModel().getSelectedItem()   ;
         String timeString = timeField.getText().trim();
         String classroom = classroomField.getText().trim();
 
@@ -377,7 +385,7 @@ public class SubjectController {
 
     // Метод для очистки полей ввода
     private void clearScheduleFields() {
-        dayField.clear();
+        dayComboBox.getSelectionModel().clearSelection();
         timeField.clear();
         classroomField.clear();
     }

@@ -79,6 +79,7 @@
 
 /* Общий стиль для текстовых полей */
 .text-field {
+    -fx-pref-height: 30px;
     -fx-background-color: #2b2b2b; /* Тёмный фон для текстового поля */
     -fx-text-fill: #dcdcdc; /* Светло-серый текст */
     -fx-border-color: #4b0082; /* Фиолетовая рамка */
@@ -106,4 +107,58 @@
     -fx-border-color: #ff0000; /* Красная рамка для ошибки */
     -fx-background-color: #2b2b2b; /* Фон остаётся тёмным */
     -fx-text-fill: #ff0000; /* Красный текст */
+}
+
+/* Стили для ComboBox */
+.combo-box {
+    -fx-pref-height: 30px;
+    -fx-background-color: #2b2b2b; /* Тёмный фон */
+    -fx-border-color: #4b0082; /* Фиолетовая рамка */
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5; /* Внутренние отступы */
+    -fx-font-size: 14px;
+    -fx-text-fill: #dcdcdc; /* Светло-серый текст */
+}
+
+/* ComboBox при наведении */
+.combo-box:hover {
+    -fx-border-color: #6a0dad; /* Ярко-фиолетовая рамка при наведении */
+}
+
+/* ComboBox в фокусе */
+.combo-box:focused {
+    -fx-border-color: #ffffff; /* Белая рамка при фокусе */
+    -fx-background-color: #1e1e1e; /* Более тёмный фон */
+    -fx-text-fill: #ffffff; /* Белый текст */
+}
+
+/* Стили для выпадающего списка */
+.combo-box .list-cell {
+    -fx-background-color: #2b2b2b; /* Тёмный фон списка */
+    -fx-text-fill: #dcdcdc; /* Светло-серый текст */
+    -fx-font-size: 14px;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #4b0082; /* Фиолетовый фон при наведении */
+    -fx-text-fill: #ffffff; /* Белый текст */
+}
+
+.combo-box .list-cell:focused {
+    -fx-background-color: #6a0dad; /* Светло-фиолетовый фон для активного элемента */
+    -fx-text-fill: #ffffff; /* Белый текст */
+}
+
+/* Стили для стрелки ComboBox */
+.combo-box .arrow {
+    -fx-background-color: #4b0082; /* Фон стрелки */
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 5;
+}
+
+.combo-box .arrow:hover {
+    -fx-background-color: #6a0dad; /* Более яркий фон стрелки при наведении */
 }
