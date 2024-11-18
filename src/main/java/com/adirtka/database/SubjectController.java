@@ -198,12 +198,12 @@ public class SubjectController {
             // Преобразование строки во время
             Time time;
             try {
-                LocalTime localTime = LocalTime.parse(schedule.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
+                LocalTime localTime = LocalTime.parse(schedule.getTime(), DateTimeFormatter.ofPattern("HH:mm:ss"));
                 time = Time.valueOf(localTime);
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Invalid Time Format");
-                alert.setHeaderText("Time must be in the format HH:mm (e.g., 14:30).");
+                alert.setHeaderText("Time must be in the format HH:mm:ss (e.g., 14:30:33).");
                 alert.showAndWait();
                 return;
             }
@@ -336,12 +336,12 @@ public class SubjectController {
         // Преобразование строки во время
         Time time;
         try {
-            LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm:ss"));
             time = Time.valueOf(localTime);
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Invalid Time Format");
-            alert.setHeaderText("Time must be in the format HH:mm (e.g., 14:30).");
+            alert.setHeaderText("Time must be in the format HH:mm:ss (e.g., 14:30:32).");
             alert.showAndWait();
             return;
         }

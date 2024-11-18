@@ -57,6 +57,7 @@
 
 
 /* Стили для заголовков таблицы */
+/* .table-column-header */
 .table-view .column-header {
     -fx-background-color: #4b0082; /* Фиолетовый фон заголовков */
     -fx-text-fill: #ffffff; /* Белый текст */
